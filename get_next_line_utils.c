@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/19 03:06:46 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/19 19:58:10 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,51 +51,67 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-char	*ft_realloc(char *src, size_t size)
+t_buf_list	*lst_new(const char *content, size_t length)
 {
-	char	*res;
+	t_buf_list	*res;
 
-	res = malloc(sizeof(char) * (size + 1));
+	if (!content)
+		return (NULL);
+	res = malloc(sizeof(t_buf_list));
 	if (!res)
 		return (NULL);
-	res = ft_memmove(res, src, size);
-	res[size] = 0;
-	//free(src);
+	ft_memmove(res->string, content, length);
+	res->length = length;
+	res->next = NULL;
 	return (res);
 }
 
-size_t	ft_strlen(const char *s)
+int	lst_add_back(t_buf_list **list, const char *content, size_t length)
 {
-	const char	*cpy;
+	t_buf_list	*tmp;
+	t_buf_list	*added;
 
-	cpy = s;
-	while (*s)
-		s++;
-	return ((size_t)(s - cpy));
+	added = lst_new(content, length);
+	if (!added)
+		return (0);
+	if (!*list)
+	{
+		*list = added;
+		return (1);
+	}
+	tmp = *list;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = added;
+	return (1);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*list_to_str(t_buf_list *list)
 {
-	size_t	i;
-	char	*res;
+	char		*res;
+	size_t		m_size;
+	t_buf_list	*start;
 
-	if (!s1)
+	if (!list)
+		return (NULL);
+	start = list;
+	m_size = 0;
+	while (list->next)
 	{
-		s2 = ft_realloc(s2, ft_strlen(s2));
-		return (s2);
+		m_size += list->length;
+		list = list->next;
 	}
-	res = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	list = start;
+	res = malloc(sizeof(char) * (m_size + 1));
 	if (!res)
 		return (NULL);
-	i = -1;
-	while (s1[++i])
-		res[i] = s1[i];
-	while (*s2)
+	m_size = 0;
+	while (list->next)
 	{
-		res[i] = *s2;
-		i++;
-		s2++;
+		ft_memmove(res + m_size, list->string, list->length);
+		m_size += list->length;
+		list = list->next;
 	}
-	res[i] = '\0';
+	printf("tst : %s\n", res);
 	return (res);
 }

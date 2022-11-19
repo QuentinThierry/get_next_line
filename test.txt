@@ -1,4 +1,4 @@
-1je suis la ligne 1.
-2je suis la ligne 2.
+1je suis ligne 1.
+2je suis ligne 2.
 
-3je suis la ligne 3.
+3je suis ligne 3.
