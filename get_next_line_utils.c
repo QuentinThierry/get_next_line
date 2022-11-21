@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/21 15:25:45 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/21 18:37:47 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,9 +122,9 @@ char	*list_to_str(t_buf_list *list)
 			return (cpy);
 		}
 		ft_memmove(res, list->string, list->length);
-		// printf("res ici : '%s'\n", cpy);
 		res += list->length;
 		list = list->next;
 	}
-	return (res);
+	cpy[m_size] = 0;
+	return (cpy);
 }

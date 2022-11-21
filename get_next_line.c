@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/21 15:55:05 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:34:48 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ char	*get_a_line(int fd, t_buf_list **list, ssize_t read_size)
 			if (!lst_add_back(list, buffer, read_size, read_size))
 				return (NULL);
 			read_size = read(fd, buffer, BUFFER_SIZE);
+			if (read_size < 1)
+				return (NULL);
 			buffer[read_size] = 0;
 		}
 	}
@@ -68,12 +70,13 @@ t_static	get_new_buffer(t_buf_list **list)
 	new_line = ft_strchr((*list)->string, '\n');
 	if (new_line)
 	{
-		size = new_line - (*list)->string; // 17
-		ft_memmove((*list)->string, (*list)->string + size + 1, (*list)->length);
-		((*list)->string)[(*list)->length - size + 1] = 0;
-		(*list)->length -= size + 1;
+		size = new_line - (*list)->string + 1;
+		ft_memmove((*list)->string, (*list)->string + size, (*list)->length - size + 1);
+		// ((*list)->string)[(*list)->length - size] = 0;
+		(*list)->length -= size;
 	}
-	
+	else
+		return (res);
 	copy_array(&res.string, &(*list)->string, (*list)->length + 1);
 	res.read_size = (*list)->length;
 	return (res);
@@ -86,6 +89,8 @@ char	*get_next_line(int fd)
 	char			*res;
 	ssize_t			read_size;
 
+	if (BUFFER_SIZE == 0)
+		return (NULL);
 	if (buffer.string[0] == 0)
 	{
 		read_size = read(fd, buffer.string, BUFFER_SIZE);
@@ -93,20 +98,20 @@ char	*get_next_line(int fd)
 			return (NULL);
 		buffer.string[read_size] = 0;
 		res_list = lst_new(buffer.string, read_size, read_size);
-		if (!res_list)
-			return (NULL);
 	}
 	else
 	{
 		res_list = lst_new(buffer.string, buffer.read_size, buffer.read_size);
-		if (!res_list)
-			return (NULL);
 		read_size = buffer.read_size;
 	}
+	if (!res_list)
+		return (NULL);
 	get_a_line(fd, &res_list, read_size);
 	if (!res_list)
 		return (NULL);
-	res = list_to_str(res_list); //protect
+	res = list_to_str(res_list);
+	if (!res)
+		return (NULL);
 	buffer = get_new_buffer(&res_list);
 	free(res_list);
 	return (res);
@@ -118,6 +123,23 @@ char	*get_next_line(int fd)
 // 	int		fd;
 
 // 	fd = open("test.txt", O_RDONLY);
+// 	while ((line = get_next_line(fd)))
+// 	{
+// 		printf("line : '%s'", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return 0;
+// }
+
+
+
+// int main(void)
+// {
+// 	char	*line;
+// 	int		fd;
+
+// 	fd = open("gnlTester/files/41_with_nl", O_RDWR);
 // 	line = get_next_line(fd);
 // 	printf("resultat1 : '%s'\n", line);
 // 	free(line);
