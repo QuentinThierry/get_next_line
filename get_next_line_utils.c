@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/21 03:10:14 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:25:45 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,20 +109,20 @@ char	*list_to_str(t_buf_list *list)
 		m_size += start->length;
 		start = start->next;
 	}
-	res = malloc (sizeof(char) * (m_size + 1));
+	res = malloc(sizeof(char) * (m_size + 1));
 	cpy = res;
 	while (list)
 	{
 		tmp = ft_strchr(list->string, '\n');
 		if (tmp)
 		{
-			printf("m_size : %ld\n", m_size);
 			size = tmp - list->string;
 			ft_memmove(res, list->string, size + 1);
 			res[size + 1] = 0;
 			return (cpy);
 		}
 		ft_memmove(res, list->string, list->length);
+		// printf("res ici : '%s'\n", cpy);
 		res += list->length;
 		list = list->next;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:09:59 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/20 22:50:30 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:47:52 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+
+typedef struct s_static
+{
+	char	string[BUFFER_SIZE + 1];
+	ssize_t	read_size;
+}	t_static;
 
 typedef struct s_buf_list
 {

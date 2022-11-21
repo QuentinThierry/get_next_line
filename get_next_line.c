@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/21 02:55:51 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:55:05 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char	*get_a_line(int fd, t_buf_list **list, ssize_t read_size)
 		tmp = ft_strchr(buffer, '\n');
 		if (tmp)
 		{
-			//printf("test ici : %ld\n", (tmp - buffer + 1));
 			if (!lst_add_back(list, buffer, read_size, read_size))
 				return (NULL);
 			return (NULL);
@@ -51,12 +50,15 @@ char	*get_a_line(int fd, t_buf_list **list, ssize_t read_size)
 	return (NULL);
 }
 
-void	get_new_buffer(t_buf_list **list)
+t_static	get_new_buffer(t_buf_list **list)
 {
 	t_buf_list	*tmp;
 	size_t		size;
 	char		*new_line;
+	t_static	res;
 
+	res.string[0] = 0;
+	res.read_size = 0;
 	while ((*list)->next)
 	{
 		tmp = *list;
@@ -69,59 +71,65 @@ void	get_new_buffer(t_buf_list **list)
 		size = new_line - (*list)->string; // 17
 		ft_memmove((*list)->string, (*list)->string + size + 1, (*list)->length);
 		((*list)->string)[(*list)->length - size + 1] = 0;
-		//printf("buffer ici length ? : %ld\n", (*list)->length);
+		(*list)->length -= size + 1;
 	}
+	
+	copy_array(&res.string, &(*list)->string, (*list)->length + 1);
+	res.read_size = (*list)->length;
+	return (res);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_buf_list	*res_list = NULL;
-	char				tmp_buffer[BUFFER_SIZE + 1];
-	char				*res;
-	ssize_t				read_size;
+	t_buf_list		*res_list;
+	static t_static buffer = {{0}, 0};
+	char			*res;
+	ssize_t			read_size;
 
-	read_size = BUFFER_SIZE;
-	//printf("buffer ? : %s, %ld\n", res_list->string);
-	if (!res_list)
+	if (buffer.string[0] == 0)
 	{
-		read_size = read(fd, tmp_buffer, BUFFER_SIZE);
+		read_size = read(fd, buffer.string, BUFFER_SIZE);
 		if (read_size < 1)
 			return (NULL);
-		tmp_buffer[read_size] = 0;
-		res_list = lst_new(tmp_buffer, read_size, read_size);
+		buffer.string[read_size] = 0;
+		res_list = lst_new(buffer.string, read_size, read_size);
 		if (!res_list)
 			return (NULL);
 	}
 	else
-		read_size = res_list->length;
+	{
+		res_list = lst_new(buffer.string, buffer.read_size, buffer.read_size);
+		if (!res_list)
+			return (NULL);
+		read_size = buffer.read_size;
+	}
 	get_a_line(fd, &res_list, read_size);
 	if (!res_list)
 		return (NULL);
 	res = list_to_str(res_list); //protect
-	get_new_buffer(&res_list);
-	//printf("buffer ? : %s\n", res_list->string);
-	//printf("nouveau buffer : '%s'\n", res_list->string);
+	buffer = get_new_buffer(&res_list);
+	free(res_list);
 	return (res);
 }
 
-int main(void)
-{
-	char	*line;
-	int		fd;
+// int main(void)
+// {
+// 	char	*line;
+// 	int		fd;
 
-	fd = open("test.txt", O_RDONLY);
-	line = get_next_line(fd);
-	printf("resultat1 : '%s'\n", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("resultat2 : '%s'\n", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("resultat3 : '%s'\n", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("resultat4 : '%s'\n", line);
-	free(line);
-	close(fd);
-	return 0;
-}
+// 	fd = open("test.txt", O_RDONLY);
+// 	line = get_next_line(fd);
+// 	printf("resultat1 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat2 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat3 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat4 : '%s'\n", line);
+// 	free(line);
+// 	close(fd);
+// 	return 0;
+// }
