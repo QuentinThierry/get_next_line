@@ -3,59 +3,104 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/19 20:00:03 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/21 02:55:51 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-t_buf_list	*get_a_line(int fd, char *buffer)
+void	copy_array(char	(*dest)[], char	(*src)[], size_t size)
 {
-	ssize_t		read_size;
-	char		*tmp;
-	char		*tmp2;
-	t_buf_list	*list;
+	size_t	i;
 
-	list = NULL;
-	if (buffer[0] == 0)
-		read_size = read(fd, buffer, BUFFER_SIZE);
-	while (read_size > 0)
+	i = 0;
+	while (i < size)
+	{
+		(*dest)[i] = (*src)[i];
+		i++;
+	}
+}
+
+char	*get_a_line(int fd, t_buf_list **list, ssize_t read_size)
+{
+	char	buffer[BUFFER_SIZE + 1];
+	char	*tmp;
+
+	copy_array(&buffer, &(*list)->string, BUFFER_SIZE + 1);
+	while (read_size)
 	{
 		tmp = ft_strchr(buffer, '\n');
 		if (tmp)
 		{
-			tmp2 = malloc(sizeof(char) * read_size);
-			ft_memmove(tmp2, buffer, read_size);
-			printf("test ici : %s\n", tmp2);
-			lst_add_back(&list, tmp2, (tmp - buffer));
-			buffer += (tmp - buffer);
-			return (list);
+			//printf("test ici : %ld\n", (tmp - buffer + 1));
+			if (!lst_add_back(list, buffer, read_size, read_size))
+				return (NULL);
+			return (NULL);
 		}
 		else
 		{
-			tmp2 = malloc(sizeof(char) * read_size);
-			ft_memmove(tmp2, buffer, read_size);
-			lst_add_back(&list, tmp2, read_size);
-			buffer += read_size;
+			if (!lst_add_back(list, buffer, read_size, read_size))
+				return (NULL);
+			read_size = read(fd, buffer, BUFFER_SIZE);
+			buffer[read_size] = 0;
 		}
-		read_size = read(fd, buffer, BUFFER_SIZE);
 	}
 	return (NULL);
 }
 
+void	get_new_buffer(t_buf_list **list)
+{
+	t_buf_list	*tmp;
+	size_t		size;
+	char		*new_line;
+
+	while ((*list)->next)
+	{
+		tmp = *list;
+		*list = (*list)->next;
+		free(tmp);
+	}
+	new_line = ft_strchr((*list)->string, '\n');
+	if (new_line)
+	{
+		size = new_line - (*list)->string; // 17
+		ft_memmove((*list)->string, (*list)->string + size + 1, (*list)->length);
+		((*list)->string)[(*list)->length - size + 1] = 0;
+		//printf("buffer ici length ? : %ld\n", (*list)->length);
+	}
+}
+
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE] = {0};
-	t_buf_list	*res_list;
-	char		*res;
+	static t_buf_list	*res_list = NULL;
+	char				tmp_buffer[BUFFER_SIZE + 1];
+	char				*res;
+	ssize_t				read_size;
 
-	res_list = get_a_line(fd, buffer);
+	read_size = BUFFER_SIZE;
+	//printf("buffer ? : %s, %ld\n", res_list->string);
+	if (!res_list)
+	{
+		read_size = read(fd, tmp_buffer, BUFFER_SIZE);
+		if (read_size < 1)
+			return (NULL);
+		tmp_buffer[read_size] = 0;
+		res_list = lst_new(tmp_buffer, read_size, read_size);
+		if (!res_list)
+			return (NULL);
+	}
+	else
+		read_size = res_list->length;
+	get_a_line(fd, &res_list, read_size);
 	if (!res_list)
 		return (NULL);
-	res = list_to_str(res_list);
+	res = list_to_str(res_list); //protect
+	get_new_buffer(&res_list);
+	//printf("buffer ? : %s\n", res_list->string);
+	//printf("nouveau buffer : '%s'\n", res_list->string);
 	return (res);
 }
 
@@ -76,7 +121,7 @@ int main(void)
 	free(line);
 	line = get_next_line(fd);
 	printf("resultat4 : '%s'\n", line);
-	
+	free(line);
 	close(fd);
 	return 0;
 }
