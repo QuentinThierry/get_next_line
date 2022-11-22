@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/21 19:34:48 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/22 17:33:35 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,43 +24,41 @@ void	copy_array(char	(*dest)[], char	(*src)[], size_t size)
 	}
 }
 
-char	*get_a_line(int fd, t_buf_list **list, ssize_t read_size)
+char	*get_a_line(int fd, t_buf_list **list, ssize_t read_size, t_static *res)
 {
-	char	buffer[BUFFER_SIZE + 1];
 	char	*tmp;
 
-	copy_array(&buffer, &(*list)->string, BUFFER_SIZE + 1);
+	copy_array(&((*res).string), &(*list)->string, read_size + 1);
 	while (read_size)
 	{
-		tmp = ft_strchr(buffer, '\n');
+		tmp = ft_strchr((*res).string, '\n');
 		if (tmp)
 		{
-			if (!lst_add_back(list, buffer, read_size, read_size))
+			if (!lst_add_back(list, (*res).string, read_size))
 				return (NULL);
 			return (NULL);
 		}
 		else
 		{
-			if (!lst_add_back(list, buffer, read_size, read_size))
+			if (!lst_add_back(list, (*res).string, read_size))
 				return (NULL);
-			read_size = read(fd, buffer, BUFFER_SIZE);
+			read_size = read(fd, (*res).string, BUFFER_SIZE);
 			if (read_size < 1)
 				return (NULL);
-			buffer[read_size] = 0;
+			(*res).string[read_size] = 0;
 		}
 	}
 	return (NULL);
 }
 
-t_static	get_new_buffer(t_buf_list **list)
+void	get_new_buffer(t_buf_list **list, t_static *buffer)
 {
 	t_buf_list	*tmp;
 	size_t		size;
 	char		*new_line;
-	t_static	res;
 
-	res.string[0] = 0;
-	res.read_size = 0;
+	(*buffer).string[0] = 0;
+	(*buffer).read_size = 0;
 	while ((*list)->next)
 	{
 		tmp = *list;
@@ -72,47 +70,39 @@ t_static	get_new_buffer(t_buf_list **list)
 	{
 		size = new_line - (*list)->string + 1;
 		ft_memmove((*list)->string, (*list)->string + size, (*list)->length - size + 1);
-		// ((*list)->string)[(*list)->length - size] = 0;
 		(*list)->length -= size;
 	}
 	else
-		return (res);
-	copy_array(&res.string, &(*list)->string, (*list)->length + 1);
-	res.read_size = (*list)->length;
-	return (res);
+		return ;
+	copy_array(&(*buffer).string, &(*list)->string, (*list)->length + 1);
+	(*buffer).read_size = (*list)->length;
+	return ;
 }
 
 char	*get_next_line(int fd)
 {
 	t_buf_list		*res_list;
-	static t_static buffer = {{0}, 0};
+	static t_static buffer;
 	char			*res;
 	ssize_t			read_size;
 
 	if (BUFFER_SIZE == 0)
 		return (NULL);
+	read_size = buffer.read_size;
 	if (buffer.string[0] == 0)
 	{
 		read_size = read(fd, buffer.string, BUFFER_SIZE);
 		if (read_size < 1)
 			return (NULL);
-		buffer.string[read_size] = 0;
-		res_list = lst_new(buffer.string, read_size, read_size);
 	}
-	else
-	{
-		res_list = lst_new(buffer.string, buffer.read_size, buffer.read_size);
-		read_size = buffer.read_size;
-	}
+	res_list = lst_new(buffer.string, read_size);
 	if (!res_list)
 		return (NULL);
-	get_a_line(fd, &res_list, read_size);
-	if (!res_list)
-		return (NULL);
+	get_a_line(fd, &res_list, read_size, &buffer);
 	res = list_to_str(res_list);
 	if (!res)
 		return (NULL);
-	buffer = get_new_buffer(&res_list);
+	get_new_buffer(&res_list, &buffer);
 	free(res_list);
 	return (res);
 }

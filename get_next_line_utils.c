@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/21 18:37:47 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/22 17:07:48 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-t_buf_list	*lst_new(const char *content, size_t read_size, size_t length)
+t_buf_list	*lst_new(const char *content, size_t read_size)
 {
 	t_buf_list	*res;
 
@@ -62,19 +62,19 @@ t_buf_list	*lst_new(const char *content, size_t read_size, size_t length)
 		return (NULL);
 	ft_memmove(res->string, content, read_size);
 	res->string[read_size] = 0;
-	res->length = length;
+	res->length = read_size;
 	res->next = NULL;
 	return (res);
 }
 
-int	lst_add_back(t_buf_list **list, const char *content, size_t read_size, size_t length)
+int	lst_add_back(t_buf_list **list, const char *content, size_t read_size)
 {
 	t_buf_list	*tmp;
 	t_buf_list	*added;
 
 	if (!content || !*content)
 		return (1);
-	added = lst_new(content, read_size, length);
+	added = lst_new(content, read_size);
 	if (!added)
 		return (0);
 	if (!*list)
@@ -95,7 +95,6 @@ char	*list_to_str(t_buf_list *list)
 	char		*cpy;
 	char		*tmp;
 	size_t		m_size;
-	size_t		size;
 	t_buf_list	*start;
 
 	res = NULL;
@@ -116,9 +115,8 @@ char	*list_to_str(t_buf_list *list)
 		tmp = ft_strchr(list->string, '\n');
 		if (tmp)
 		{
-			size = tmp - list->string;
-			ft_memmove(res, list->string, size + 1);
-			res[size + 1] = 0;
+			ft_memmove(res, list->string, (tmp - list->string) + 1);
+			res[(tmp - list->string) + 1] = 0;
 			return (cpy);
 		}
 		ft_memmove(res, list->string, list->length);
