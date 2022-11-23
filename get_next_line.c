@@ -6,13 +6,28 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/22 17:33:35 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:25:54 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	copy_array(char	(*dest)[], char	(*src)[], size_t size)
+char	*ft_strchr(const char *s, int c)
+{
+	if (!s)
+		return (NULL);
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if (c == 0)
+		return ((char *)s);
+	return (NULL);
+}
+
+void	copy_array(char (*dest)[], char (*src)[], size_t size)
 {
 	size_t	i;
 
@@ -69,7 +84,8 @@ void	get_new_buffer(t_buf_list **list, t_static *buffer)
 	if (new_line)
 	{
 		size = new_line - (*list)->string + 1;
-		ft_memmove((*list)->string, (*list)->string + size, (*list)->length - size + 1);
+		ft_memmove((*list)->string, \
+			(*list)->string + size, (*list)->length - size + 1);
 		(*list)->length -= size;
 	}
 	else
@@ -82,7 +98,7 @@ void	get_new_buffer(t_buf_list **list, t_static *buffer)
 char	*get_next_line(int fd)
 {
 	t_buf_list		*res_list;
-	static t_static buffer;
+	static t_static	buffer;
 	char			*res;
 	ssize_t			read_size;
 
@@ -122,26 +138,24 @@ char	*get_next_line(int fd)
 // 	return 0;
 // }
 
+int main(void)
+{
+	char	*line;
+	int		fd;
 
-
-// int main(void)
-// {
-// 	char	*line;
-// 	int		fd;
-
-// 	fd = open("gnlTester/files/41_with_nl", O_RDWR);
-// 	line = get_next_line(fd);
-// 	printf("resultat1 : '%s'\n", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("resultat2 : '%s'\n", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("resultat3 : '%s'\n", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("resultat4 : '%s'\n", line);
-// 	free(line);
-// 	close(fd);
-// 	return 0;
-// }
+	fd = open("test.txt", O_RDWR);
+	line = get_next_line(fd);
+	printf("resultat1 : '%s'\n", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("resultat2 : '%s'\n", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("resultat3 : '%s'\n", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("resultat4 : '%s'\n", line);
+	free(line);
+	close(fd);
+	return 0;
+}

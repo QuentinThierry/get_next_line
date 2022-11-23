@@ -6,26 +6,11 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/22 17:07:48 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:25:48 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char	*ft_strchr(const char *s, int c)
-{
-	if (!s)
-		return (NULL);
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if (c == 0)
-		return ((char *)s);
-	return (NULL);
-}
 
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
@@ -89,11 +74,30 @@ int	lst_add_back(t_buf_list **list, const char *content, size_t read_size)
 	return (1);
 }
 
+int	append_string(t_buf_list *list, char **res)
+{
+	char	*tmp;
+
+	while (list)
+	{
+		tmp = ft_strchr(list->string, '\n');
+		if (tmp)
+		{
+			ft_memmove((*res), list->string, (tmp - list->string) + 1);
+			(*res)[(tmp - list->string) + 1] = 0;
+			return (1);
+		}
+		ft_memmove((*res), list->string, list->length);
+		(*res) += list->length;
+		list = list->next;
+	}
+	return (0);
+}
+
 char	*list_to_str(t_buf_list *list)
 {
 	char		*res;
 	char		*cpy;
-	char		*tmp;
 	size_t		m_size;
 	t_buf_list	*start;
 
@@ -110,19 +114,7 @@ char	*list_to_str(t_buf_list *list)
 	}
 	res = malloc(sizeof(char) * (m_size + 1));
 	cpy = res;
-	while (list)
-	{
-		tmp = ft_strchr(list->string, '\n');
-		if (tmp)
-		{
-			ft_memmove(res, list->string, (tmp - list->string) + 1);
-			res[(tmp - list->string) + 1] = 0;
-			return (cpy);
-		}
-		ft_memmove(res, list->string, list->length);
-		res += list->length;
-		list = list->next;
-	}
-	cpy[m_size] = 0;
+	if (!append_string(list, &res))
+		cpy[m_size] = 0;
 	return (cpy);
 }
