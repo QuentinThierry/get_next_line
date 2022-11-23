@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/23 13:25:48 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:20:22 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,22 +36,6 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-t_buf_list	*lst_new(const char *content, size_t read_size)
-{
-	t_buf_list	*res;
-
-	if (!content)
-		return (NULL);
-	res = malloc(sizeof(t_buf_list));
-	if (!res)
-		return (NULL);
-	ft_memmove(res->string, content, read_size);
-	res->string[read_size] = 0;
-	res->length = read_size;
-	res->next = NULL;
-	return (res);
-}
-
 int	lst_add_back(t_buf_list **list, const char *content, size_t read_size)
 {
 	t_buf_list	*tmp;
@@ -59,9 +43,13 @@ int	lst_add_back(t_buf_list **list, const char *content, size_t read_size)
 
 	if (!content || !*content)
 		return (1);
-	added = lst_new(content, read_size);
+	added = malloc(sizeof(t_buf_list));
 	if (!added)
 		return (0);
+	ft_memmove(added->string, content, read_size);
+	added->string[read_size] = 0;
+	added->length = read_size;
+	added->next = NULL;
 	if (!*list)
 	{
 		*list = added;
@@ -74,47 +62,29 @@ int	lst_add_back(t_buf_list **list, const char *content, size_t read_size)
 	return (1);
 }
 
-int	append_string(t_buf_list *list, char **res)
+char	*ft_strchr(const char *s, int c)
 {
-	char	*tmp;
-
-	while (list)
+	if (!s)
+		return (NULL);
+	while (*s)
 	{
-		tmp = ft_strchr(list->string, '\n');
-		if (tmp)
-		{
-			ft_memmove((*res), list->string, (tmp - list->string) + 1);
-			(*res)[(tmp - list->string) + 1] = 0;
-			return (1);
-		}
-		ft_memmove((*res), list->string, list->length);
-		(*res) += list->length;
-		list = list->next;
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
 	}
-	return (0);
+	if (c == 0)
+		return ((char *)s);
+	return (NULL);
 }
 
-char	*list_to_str(t_buf_list *list)
+void	copy_array(char (*dest)[], char (*src)[], size_t size)
 {
-	char		*res;
-	char		*cpy;
-	size_t		m_size;
-	t_buf_list	*start;
+	size_t	i;
 
-	res = NULL;
-	if (!list)
-		return (NULL);
-	m_size = 0;
-	list = list->next;
-	start = list;
-	while (start)
+	i = 0;
+	while (i < size)
 	{
-		m_size += start->length;
-		start = start->next;
+		(*dest)[i] = (*src)[i];
+		i++;
 	}
-	res = malloc(sizeof(char) * (m_size + 1));
-	cpy = res;
-	if (!append_string(list, &res))
-		cpy[m_size] = 0;
-	return (cpy);
 }

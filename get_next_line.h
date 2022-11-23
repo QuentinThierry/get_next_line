@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:09:59 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/23 13:15:27 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:20:18 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 typedef struct s_static
 {
+	int		fd;
 	char	string[BUFFER_SIZE + 1];
 	ssize_t	read_size;
 }	t_static;
