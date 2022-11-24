@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:00:09 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:03:42 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,14 +122,14 @@ char	*get_next_line(int fd)
 
 	if (BUFFER_SIZE == 0)
 		return (NULL);
-	if(read(fd, NULL, 0) == -1)
+	if (read(fd, NULL, 0) == -1)
 		return (NULL);
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
 	is_end = get_a_line(fd, &res_list, buffer);
 	free(buffer);
-	if(is_end == -1)
+	if (is_end == -1)
 		return (NULL);
 	res = list_to_str(res_list);
 	if (!res)
