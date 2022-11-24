@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:07:59 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:24:35 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,40 +137,3 @@ char	*get_next_line(int fd)
 	get_new_buffer(&res_list[fd], !is_end);
 	return (res);
 }
-
-// int main(void)
-// {
-// 	char	*line;
-// 	int		fd;
-
-// 	fd = open("text.txt", O_RDONLY);
-// 	while ((line = get_next_line(fd)))
-// 	{
-// 		printf("line : '%s'", line);
-// 		free(line);
-// 	}
-// 	close(fd);
-// 	return 0;
-// }
-
-// int main(void)
-// {
-// 	char	*line;
-// 	int		fd;
-
-// 	fd = open("test.txt", O_RDWR);
-// 	line = get_next_line(fd);
-// 	printf("resultat1 : '%s'\n", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("resultat2 : '%s'\n", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("resultat3 : '%s'\n", line);
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("resultat4 : '%s'\n", line);
-// 	free(line);
-// 	close(fd);
-// 	return 0;
-// }
