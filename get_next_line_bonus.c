@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:19:16 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:07:59 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	get_new_buffer(t_buf_list **list, int is_end)
 
 char	*get_next_line(int fd)
 {
-	static t_buf_list	*res_list = NULL;
+	static t_buf_list	*res_list[1024] = {0};
 	char				*res;
 	int					is_end;
 	char				*buffer;
@@ -127,13 +127,50 @@ char	*get_next_line(int fd)
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	is_end = get_a_line(fd, &res_list, buffer);
+	is_end = get_a_line(fd, &(res_list[fd]), buffer);
 	free(buffer);
 	if (is_end == -1)
 		return (NULL);
-	res = list_to_str(res_list);
+	res = list_to_str(res_list[fd]);
 	if (!res)
 		return (NULL);
-	get_new_buffer(&res_list, !is_end);
+	get_new_buffer(&res_list[fd], !is_end);
 	return (res);
 }
+
+// int main(void)
+// {
+// 	char	*line;
+// 	int		fd;
+
+// 	fd = open("text.txt", O_RDONLY);
+// 	while ((line = get_next_line(fd)))
+// 	{
+// 		printf("line : '%s'", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return 0;
+// }
+
+// int main(void)
+// {
+// 	char	*line;
+// 	int		fd;
+
+// 	fd = open("test.txt", O_RDWR);
+// 	line = get_next_line(fd);
+// 	printf("resultat1 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat2 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat3 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat4 : '%s'\n", line);
+// 	free(line);
+// 	close(fd);
+// 	return 0;
+// }
