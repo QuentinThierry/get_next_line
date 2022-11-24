@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:09:59 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/23 15:30:26 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:01:22 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ typedef struct s_buf_list
 	struct s_buf_list	*next;
 }	t_buf_list;
 
-void		copy_array(char (*dest)[], char (*src)[], size_t size);
-int			get_a_line(int fd, t_buf_list **list);
-void		get_new_buffer(t_buf_list **list);
+void		copy_array(char **dest, char (*src)[], size_t size);
+int			get_a_line(int fd, t_buf_list **list, char *buffer);
+void		get_new_buffer(t_buf_list **list, int is_end);
 char		*get_next_line(int fd);
 
 char		*ft_strchr(const char *s, int c);

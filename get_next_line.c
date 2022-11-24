@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/23 16:30:43 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:00:09 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,37 +50,43 @@ char	*list_to_str(t_buf_list *list)
 		start = start->next;
 	}
 	res = malloc(sizeof(char) * (m_size + 1));
+	if (!res)
+		return (NULL);
 	cpy = res;
 	if (!append_string(list, &res))
 		cpy[m_size] = 0;
 	return (cpy);
 }
 
-int	get_a_line(int fd, t_buf_list **list)
+int	get_a_line(int fd, t_buf_list **list, char *buffer)
 {
-	char	buffer[BUFFER_SIZE + 1];
 	ssize_t	read_size;
+	int		ready;
 
+	ready = 1;
 	if (*list)
 	{
 		read_size = (*list)->length;
 		copy_array(&buffer, &(*list)->string, (*list)->length);
+		ready = 0;
 	}
 	else
 		read_size = read(fd, buffer, BUFFER_SIZE);
 	while (read_size > 0)
 	{
 		buffer[read_size] = 0;
-		if (!lst_add_back(list, buffer, read_size))
-			return (0);
+		if (ready)
+			if (!lst_add_back(list, buffer, read_size))
+				return (-1);
 		if (ft_strchr(buffer, '\n'))
-			return (buffer[read_size] = 0, 1);
+			return (1);
 		read_size = read(fd, buffer, BUFFER_SIZE);
+		ready = 1;
 	}
-	return (1);
+	return (0);
 }
 
-void	get_new_buffer(t_buf_list **list)
+void	get_new_buffer(t_buf_list **list, int is_end)
 {
 	t_buf_list	*tmp;
 	size_t		size;
@@ -100,29 +106,35 @@ void	get_new_buffer(t_buf_list **list)
 			(*list)->string + size, (*list)->length - size + 1);
 		(*list)->length -= size;
 	}
-	else
+	if (is_end || (*list)->length == 0)
 	{
 		free(*list);
 		*list = NULL;
 	}
-
 }
 
 char	*get_next_line(int fd)
 {
 	static t_buf_list	*res_list = NULL;
 	char				*res;
+	int					is_end;
+	char				*buffer;
 
 	if (BUFFER_SIZE == 0)
 		return (NULL);
 	if(read(fd, NULL, 0) == -1)
 		return (NULL);
-	if(!get_a_line(fd, &res_list))
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	is_end = get_a_line(fd, &res_list, buffer);
+	free(buffer);
+	if(is_end == -1)
 		return (NULL);
 	res = list_to_str(res_list);
 	if (!res)
 		return (NULL);
-	get_new_buffer(&res_list);
+	get_new_buffer(&res_list, !is_end);
 	return (res);
 }
 
@@ -141,24 +153,24 @@ char	*get_next_line(int fd)
 // 	return 0;
 // }
 
-int main(void)
-{
-	char	*line;
-	int		fd;
+// int main(void)
+// {
+// 	char	*line;
+// 	int		fd;
 
-	fd = open("test.txt", O_RDWR);
-	line = get_next_line(fd);
-	printf("resultat1 : '%s'\n", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("resultat2 : '%s'\n", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("resultat3 : '%s'\n", line);
-	free(line);
-	line = get_next_line(fd);
-	printf("resultat4 : '%s'\n", line);
-	free(line);
-	close(fd);
-	return 0;
-}
+// 	fd = open("test.txt", O_RDWR);
+// 	line = get_next_line(fd);
+// 	printf("resultat1 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat2 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat3 : '%s'\n", line);
+// 	free(line);
+// 	line = get_next_line(fd);
+// 	printf("resultat4 : '%s'\n", line);
+// 	free(line);
+// 	close(fd);
+// 	return 0;
+// }

@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/23 14:20:22 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:01:13 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-void	copy_array(char (*dest)[], char (*src)[], size_t size)
+void	copy_array(char **dest, char (*src)[], size_t size)
 {
 	size_t	i;
 
