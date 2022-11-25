@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:09:59 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:19:33 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/25 22:37:50 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,9 @@
 #  define BUFFER_SIZE 10
 # endif
 
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
-
-typedef struct s_static
-{
-	int		fd;
-	char	string[BUFFER_SIZE + 1];
-	ssize_t	read_size;
-}	t_static;
 
 typedef struct s_buf_list
 {

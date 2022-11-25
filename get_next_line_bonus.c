@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:24:35 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/25 22:37:32 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	append_string(t_buf_list *list, char **res)
 {
@@ -115,7 +115,7 @@ void	get_new_buffer(t_buf_list **list, int is_end)
 
 char	*get_next_line(int fd)
 {
-	static t_buf_list	*res_list[1024] = {0};
+	static t_buf_list	*res_list[4096] = {0};
 	char				*res;
 	int					is_end;
 	char				*buffer;
