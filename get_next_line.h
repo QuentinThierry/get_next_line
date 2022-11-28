@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:09:59 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:01:22 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/28 22:50:36 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,12 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 100
 # endif
 
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
-
-typedef struct s_static
-{
-	int		fd;
-	char	string[BUFFER_SIZE + 1];
-	ssize_t	read_size;
-}	t_static;
 
 typedef struct s_buf_list
 {
@@ -47,5 +39,6 @@ t_buf_list	*lst_new(const char *content, size_t read_size);
 int			lst_add_back(t_buf_list **list, const char *content, \
 	size_t read_size);
 char		*list_to_str(t_buf_list *list);
+void		free_list(t_buf_list **list);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/24 17:19:16 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/28 22:46:14 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	get_a_line(int fd, t_buf_list **list, char *buffer)
 		buffer[read_size] = 0;
 		if (ready)
 			if (!lst_add_back(list, buffer, read_size))
-				return (-1);
+				return (free_list(list), -1);
 		if (ft_strchr(buffer, '\n'))
 			return (1);
 		read_size = read(fd, buffer, BUFFER_SIZE);
@@ -126,14 +126,14 @@ char	*get_next_line(int fd)
 		return (NULL);
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-		return (NULL);
+		return (free_list(&res_list), NULL);
 	is_end = get_a_line(fd, &res_list, buffer);
 	free(buffer);
 	if (is_end == -1)
 		return (NULL);
 	res = list_to_str(res_list);
 	if (!res)
-		return (NULL);
+		return (free_list(&res_list), NULL);
 	get_new_buffer(&res_list, !is_end);
 	return (res);
 }

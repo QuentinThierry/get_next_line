@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:09:59 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/25 22:37:50 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/28 22:50:40 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
+#  define BUFFER_SIZE 100
 # endif
 
 # include <stdlib.h>
@@ -39,5 +39,6 @@ t_buf_list	*lst_new(const char *content, size_t read_size);
 int			lst_add_back(t_buf_list **list, const char *content, \
 	size_t read_size);
 char		*list_to_str(t_buf_list *list);
+void		free_list(t_buf_list **list);
 
 #endif
