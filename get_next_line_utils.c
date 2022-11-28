@@ -6,7 +6,7 @@
 /*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:13:21 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/28 22:36:22 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/28 23:03:20 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	copy_array(char **dest, char (*src)[], size_t size)
 	}
 }
 
-void free_list(t_buf_list **list)
+void	free_list(t_buf_list **list)
 {
 	t_buf_list	*cpy;
 
