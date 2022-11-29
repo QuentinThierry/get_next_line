@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qthierry <qthierry@student.fr>             +#+  +:+       +#+        */
+/*   By: qthierry <qthierry@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/19 01:10:02 by qthierry          #+#    #+#             */
-/*   Updated: 2022/11/28 22:46:14 by qthierry         ###   ########.fr       */
+/*   Updated: 2022/11/29 14:49:31 by qthierry         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,10 +120,8 @@ char	*get_next_line(int fd)
 	int					is_end;
 	char				*buffer;
 
-	if (BUFFER_SIZE == 0)
-		return (NULL);
-	if (read(fd, NULL, 0) == -1)
-		return (NULL);
+	// if (BUFFER_SIZE == 0)
+	// 	return (NULL);
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (free_list(&res_list), NULL);
